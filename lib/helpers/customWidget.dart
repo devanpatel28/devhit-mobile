@@ -4,6 +4,7 @@ import'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:hovering/hovering.dart';
+import 'package:skeleton_text/skeleton_text.dart';
 import 'colors.dart';
 
 
@@ -378,5 +379,20 @@ Widget contactFooter(context)
         ),
       ),
     ],
+  );
+}
+
+Widget loadingBar(context,cHeight,cWidth)
+{
+  return SkeletonAnimation(
+    curve: Curves.ease,
+      child: Container(
+        height: getHeight(context, cHeight),
+        width: getWidth(context, cWidth),
+        decoration: BoxDecoration(
+          color: pallete1,
+          borderRadius: BorderRadius.circular(getSize(context, 1.5))
+        ),
+      )
   );
 }

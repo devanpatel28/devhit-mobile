@@ -4,35 +4,29 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../API/APIs.dart';
-class LoginController extends GetxController {
+import '../model/userModel.dart';
+class UserController extends GetxController {
 
-  Future<bool> login(String mobile, String password) async {
+  Future<User?> fetchuser(int uid) async {
     try {
-      // Make the API call
       final response = await http.post(
-          Uri.parse(validateuserAPI),
+          Uri.parse(userbyidAPI),
           headers: {'Content-Type': 'application/json'},
           body: json.encode({
-            "user_mobile": mobile,
-            "user_password" : password
+            "user_id": uid,
           })
       );
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-        int userId = responseData[0]['user_id'];
-        await prefs.setInt('userId', userId);
-
-        print(userId);
-        return true;
+        print("data obtained");
+        return User.fromJson(responseData[0]);
       } else {
-        return false;
+        return null;
       }
     } catch (e) {
       print('Error: $e');
-      return false;
+      return null;
     }
   }
 }

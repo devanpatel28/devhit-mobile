@@ -63,6 +63,7 @@ dependencies:
   anim_search_bar: ^2.0.3
   loading_animation_widget: ^1.2.0+4
   shared_preferences: ^2.2.2
+  skeleton_text: ^3.0.1
 
 dev_dependencies:
   flutter_test:

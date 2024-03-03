@@ -1,20 +1,49 @@
-import 'package:devhit_mobile/screens/AdminDashboard.dart';
-import 'package:devhit_mobile/screens/LoginScreen.dart';
-import 'package:devhit_mobile/screens/UserDashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'screens/LoginScreen.dart';
+import 'screens/UserDashboard.dart';
+
 void main() {
   runApp(MyApp());
 }
-class MyApp extends StatelessWidget {
+
+class MyApp extends StatefulWidget {
   MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  Future<int> getInitialScreen() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Use ?? 0 to handle the case when prefs.getInt returns null
+    return prefs.getInt('userId') ?? 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: LoginScreen()
+      debugShowCheckedModeBanner: false,
+      home: FutureBuilder<int>(
+        future: getInitialScreen(),
+        builder: (context, snapshot) {
+          // Check if the future is complete and has data
+          if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+            // If userId is not 0, go to UserDashboard, else show LoginScreen
+            if (snapshot.data! > 0) {
+              return UserDashboard();
+            } else {
+              return LoginScreen();
+            }
+          } else {
+            // Show loading indicator while waiting for the future to complete
+            return Scaffold(body: Center(child: CircularProgressIndicator()));
+          }
+        },
+      ),
     );
   }
 }

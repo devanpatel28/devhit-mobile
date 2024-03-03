@@ -9,6 +9,7 @@ class LoginController extends GetxController {
   Future<bool> login(String mobile, String password) async {
     try {
       // Make the API call
+      print(validateuserAPI);
       final response = await http.post(
           Uri.parse(validateuserAPI),
           headers: {'Content-Type': 'application/json'},

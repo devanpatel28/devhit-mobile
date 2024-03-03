@@ -4,6 +4,7 @@ class User {
   final String userEmail;
   final String userMobile;
   final String userAdress;
+  final int projectId;
   // Add other fields as necessary
 
   User({
@@ -11,7 +12,8 @@ class User {
     required this.userName,
     required this.userEmail,
     required this.userMobile,
-    required this.userAdress
+    required this.userAdress,
+    required this.projectId
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -21,6 +23,7 @@ class User {
       userEmail: json['user_email'],
       userMobile: json['user_mobile'],
       userAdress: json['user_address'],
+        projectId:json['pro_id']
       // Initialize other fields
     );
   }

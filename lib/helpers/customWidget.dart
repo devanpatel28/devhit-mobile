@@ -4,6 +4,7 @@ import'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:hovering/hovering.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 import 'colors.dart';
 
@@ -382,7 +383,7 @@ Widget contactFooter(context)
   );
 }
 
-Widget loadingBar(context,cHeight,cWidth)
+Widget loadingBar(context,cHeight,cWidth,Color color)
 {
   return SkeletonAnimation(
     curve: Curves.ease,
@@ -390,9 +391,37 @@ Widget loadingBar(context,cHeight,cWidth)
         height: getHeight(context, cHeight),
         width: getWidth(context, cWidth),
         decoration: BoxDecoration(
-          color: pallete1,
+          color: color,
           borderRadius: BorderRadius.circular(getSize(context, 1.5))
         ),
       )
+  );
+}
+
+Widget customLoading(double size)
+{
+  return Center(
+    child: Stack(
+      alignment: Alignment.center,
+      children: [
+        Container(
+          height:double.infinity,
+          width: double.infinity,
+          color: Colors.black12,
+        ),
+        Container(
+          height: size,
+          width: size,
+          decoration: BoxDecoration(
+              color: pallete0,
+              shape: BoxShape.circle
+          ),
+        ),
+        LoadingAnimationWidget.fourRotatingDots(
+          color: pallete2,
+          size: (size/3)*1.7,
+        ),
+      ],
+    ),
   );
 }

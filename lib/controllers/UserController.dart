@@ -29,4 +29,30 @@ class UserController extends GetxController {
       return null;
     }
   }
+
+  Future<bool> updateuser(int uid,String uName,String uEmail,String uMobile,String uAddress) async {
+    try {
+      final response = await http.post(
+          Uri.parse(updateUserAPI),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            "user_id":uid,
+            "user_name":uName,
+            "user_email":uEmail,
+            "user_mobile":uMobile,
+            "user_address":uAddress
+          })
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+        print("data Updated");
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return false;
+    }
+  }
 }

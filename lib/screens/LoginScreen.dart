@@ -1,3 +1,4 @@
+import 'package:devhit_mobile/API/APIs.dart';
 import 'package:devhit_mobile/controllers/LoginController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../helpers/colors.dart';
+import '../helpers/customWidget.dart';
 import '../helpers/size.dart';
 import 'AdminDashboard.dart';
 import 'UserDashboard.dart';
@@ -28,13 +30,6 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: pallete0,
       body: Stack(
         children: [
-          if(isLoading)
-            Center(
-              child: LoadingAnimationWidget.fourRotatingDots(
-                color: pallete4,
-                size: 100,
-              ),
-            ),
           Center(
             child: SingleChildScrollView(
               child: Container(
@@ -118,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           });
                           if(await loginControl.login(mob.text,pass.text))
                             {
-                              Get.to(UserDashboard(),curve: Curves.ease,duration: Duration(seconds: 1));
+                              Get.offAll(UserDashboard(),curve: Curves.ease,duration: Duration(seconds: 1));
                             }
                           else
                             {
@@ -149,6 +144,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
+          if(isLoading)
+            customLoading(120)
         ],
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:devhit_mobile/controllers/UserController.dart';
 import 'package:devhit_mobile/screens/EditProfileScreen.dart';
 import 'package:devhit_mobile/screens/LoginScreen.dart';
+import 'package:devhit_mobile/screens/ProjectImagesScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -219,48 +220,81 @@ class _UserDashboardState extends State<UserDashboard> {
                       ),
                     ),
                   ),
-                  customDivider(context, 2.0, 1, 1),
+                  customDivider(context, 2.0, 1.5, 1.5),
                   Container(
                     decoration: BoxDecoration(
                       color: pallete1,
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
                     width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top: 20,bottom: 10),
-                          child:Center(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Container(
+                            clipBehavior: Clip.antiAlias,
+                              width: 150,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(7),
+                            ),
                             child: currentProject!=null?
-                                Text(currentProject!.proName,style: primaryStyleBold(context, pallete4, 5),textAlign: TextAlign.left)
-                                :loadingBar(context, 0.03, 0.5,Colors.black12),
-                          )
-                        ),
-                        LinearPercentIndicator(
-                          alignment: MainAxisAlignment.center,
-                          width: getWidth(context, 0.9),
-                          lineHeight: 20.0,
-                          barRadius: Radius.circular(10),
-                          percent: currentProject!=null?currentProject!.proPercent:0,
-                          animation: true,
-                          progressColor: pallete4,
-                          backgroundColor: Colors.black26,
-                        ),
-
-                        Padding(
-                          padding: const EdgeInsets.only(top: 15,bottom: 15),
-                          child: Center(
-                            child: currentProject!=null?
-                            Text("Status : ${currentProject?.proStatus}",style: primaryStyleBold(context, pallete4, 3.5),textAlign: TextAlign.left)
-                                :loadingBar(context, 0.02, 0.4, Colors.black12),
+                            Image.network(
+                              currentProject!.proImage,
+                              fit: BoxFit.cover,
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if(loadingProgress==null)
+                                  {
+                                    return child;
+                                  }
+                                return Stack(
+                                  children: [
+                                    Center(child: Text("Loading...",style: primaryStyle(context, pallete4, 3),)),
+                                    loadingBar(context, 150, 150, Colors.black12),
+                                  ],
+                                );
+                              }
+                              )
+                                :loadingBar(context, 150, 150, Colors.black12)
                           ),
                         ),
-                        SizedBox(height: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20,bottom: 10,left: 10),
+                              child:Center(
+                                child: currentProject!=null?
+                                    Text(currentProject!.proName,style: primaryStyleBold(context, pallete4, 5),textAlign: TextAlign.left)
+                                    :loadingBar(context, 0.03, 0.45,Colors.black12),
+                              )
+                            ),
+                            LinearPercentIndicator(
+                              alignment: MainAxisAlignment.center,
+                              width: getWidth(context, 0.45),
+                              lineHeight: 12.0,
+                              barRadius: Radius.circular(10),
+                              percent: currentProject!=null?currentProject!.proPercent:0,
+                              animation: true,
+                              progressColor: pallete4,
+                              backgroundColor: Colors.black12,
+                            ),
+
+                            Padding(
+                              padding: const EdgeInsets.only(top: 15,bottom: 15,left: 10),
+                              child: Center(
+                                child: currentProject!=null?
+                                Text("Status : ${currentProject?.proStatus}",style: primaryStyleBold(context, pallete4, 3.5),textAlign: TextAlign.left)
+                                    :loadingBar(context, 0.02, 0.4, Colors.black12),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                          ],
+                        ),
                       ],
                     ),
                   ),
-                  customDivider(context, 2.0, 1, 1),
+                  customDivider(context, 2.0, 1.5, 1.5),
                   Expanded(
                     child: Container(
                       width: double.infinity,
@@ -277,11 +311,11 @@ class _UserDashboardState extends State<UserDashboard> {
                           ),
                           scrollDirection: Axis.vertical,
                           children: [
-                            custProfCardUser(context,"Property Images", 4.0, CupertinoIcons.photo_on_rectangle,LoginScreen()),
-                            custProfCardUser(context,"Property Documents", 4.0, CupertinoIcons.doc_append,LoginScreen()),
-                            custProfCardUser(context,"Personal Documents", 4.0,CupertinoIcons.doc_person,LoginScreen()),
-                            custProfCardUser(context,"Transaction", 4.0, CupertinoIcons.arrow_right_arrow_left,LoginScreen()),
-                            custProfCardUser(context,"Bills Documents", 4.0, CupertinoIcons.doc_text,LoginScreen()),
+                            custProfCardUser(context,"Property Images", 4.0, CupertinoIcons.photo_on_rectangle,ProjectImagesScreen()),
+                            custProfCardUser(context,"Property Documents", 4.0, CupertinoIcons.doc_append,ProjectImagesScreen()),
+                            custProfCardUser(context,"Personal Documents", 4.0,CupertinoIcons.doc_person,ProjectImagesScreen()),
+                            custProfCardUser(context,"Transaction", 4.0, CupertinoIcons.arrow_right_arrow_left,ProjectImagesScreen()),
+                            custProfCardUser(context,"Bills Documents", 4.0, CupertinoIcons.doc_text,ProjectImagesScreen()),
                           ],
                         ),
                       ),

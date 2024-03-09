@@ -67,11 +67,31 @@ Widget customDivider(context,ind,upper,lower){
           color: Color(0x00FFFFFF),
         ),
       ),
-      Divider(
-        color: Colors.black45,
-        indent: ind,
-        endIndent: ind,
-
+      Row(
+        children: [
+          Expanded(
+              child:Container(
+                height: 1,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.transparent, Colors.black38],
+                  ),
+                ),
+              )
+          ),
+          Expanded(
+              child:Container(
+                height: 1,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.black38,Colors.transparent, ],
+                  ),
+                ),
+              )
+          ),
+        ],
       ),
       Container(
         width: double.infinity,
@@ -157,7 +177,7 @@ Widget customButton(context,buttonTitle,buttonIco,forgroundColor,backgroundColor
 Widget customHeading(context,title)
 {
   return Padding(
-    padding: const EdgeInsets.only(top: 55,bottom: 35),
+    padding: const EdgeInsets.only(top: 10,bottom: 10),
     child: Row(
       children: [
         Expanded(
@@ -173,7 +193,7 @@ Widget customHeading(context,title)
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 15),
-          child: Text(title.toString().toUpperCase(),style: TextStyle(color: Colors.black,fontFamily: "MainReg",fontSize: 15,fontWeight: FontWeight.w600)),
+          child: Text(title.toString().toUpperCase(),style: primaryStyleBold(context, pallete4, 3)),
         ),
         Expanded(
             child:Container(
@@ -383,7 +403,7 @@ Widget contactFooter(context)
   );
 }
 
-Widget loadingBar(context,cHeight,cWidth,Color color)
+Widget loadingBar(context,double cHeight,double cWidth,Color color)
 {
   return SkeletonAnimation(
     curve: Curves.ease,

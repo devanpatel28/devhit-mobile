@@ -104,24 +104,24 @@ Widget customDivider(context,ind,upper,lower){
   );
 }
 
-Widget custProfCardUser(context,String str,fontSize,IconData ico,PageAddress){
+Widget custProfCardUser(context,String str,IconData ico,PageAddress){
   return InkWell(
     onTap: (){Get.to(PageAddress);},
-    child: Container(
-      decoration: BoxDecoration(
-          color: pallete1,
-          borderRadius: BorderRadius.circular(10),
+    child: Column(
+      children: [
+        Container(
+          height: getHeight(context,0.17),
+          width: getWidth(context, 0.35),
+          decoration: BoxDecoration(
+              color: pallete1,
+              borderRadius: BorderRadius.circular(15),
 
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(ico, size: getSize(context, 15),color: pallete4,),
-          SizedBox(height: 15,),
-          Text(str,style: primaryStyleBold(context, pallete4, fontSize),)
-        ],
-      ),
+          ),
+          child: Icon(ico, size: getSize(context, 13),color: pallete4,),
+        ),
+        SizedBox(height: 10,),
+        Text(str,style: primaryStyleBold(context, pallete4, 3.5),)
+      ],
     ),
   );
 }

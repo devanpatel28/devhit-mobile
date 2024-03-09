@@ -58,12 +58,18 @@ dependencies:
   colorize_text_avatar: ^1.0.2
   percent_indicator: ^4.2.3
   image_picker: ^1.0.7
-  file_picker: ^6.1.1
+  file_picker: ^6.2.0
   image_picker_web: ^3.1.1
   anim_search_bar: ^2.0.3
   loading_animation_widget: ^1.2.0+4
   shared_preferences: ^2.2.2
   skeleton_text: ^3.0.1
+  firebase_storage: ^11.6.9
+  firebase_core: ^2.27.0
+  path_provider: ^2.1.2
+  dio: ^5.4.1
+  permission_handler: ^11.3.0
+
 
 dev_dependencies:
   flutter_test:

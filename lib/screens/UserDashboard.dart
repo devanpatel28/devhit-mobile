@@ -1,15 +1,13 @@
 import 'package:devhit_mobile/controllers/UserController.dart';
 import 'package:devhit_mobile/screens/EditProfileScreen.dart';
 import 'package:devhit_mobile/screens/LoginScreen.dart';
+import 'package:devhit_mobile/screens/PersonalDocumentScreen.dart';
 import 'package:devhit_mobile/screens/ProjectImagesScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:skeleton_text/skeleton_text.dart';
-
 import '../controllers/ProjectController.dart';
 import '../helpers/colors.dart';
 import '../helpers/customWidget.dart';
@@ -127,13 +125,6 @@ class _UserDashboardState extends State<UserDashboard> {
                       title: Text("Edit Profile",style: primaryStyleBold(context, pallete4, 4),),
                       onTap: () {
                         Get.to(EditProfileScreen(currentUser),curve: Curves.ease);
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.contact_phone,color: pallete4),
-                      title: Text("Contact Us",style: primaryStyleBold(context, pallete4, 4),),
-                      onTap: () {
-                        // Add your contact us logic here
                       },
                     ),
                     ListTile(
@@ -300,22 +291,17 @@ class _UserDashboardState extends State<UserDashboard> {
                       width: double.infinity,
                       height: getHeight(context, 1),
                       child: Expanded(
-                        child: GridView(
+                        child: GridView.count(
                           padding: EdgeInsets.zero,
                           clipBehavior: Clip.hardEdge,
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount:2,
-                              crossAxisSpacing: 20,
-                              mainAxisSpacing: 20,
-                              childAspectRatio: 1
-                          ),
                           scrollDirection: Axis.vertical,
+                          crossAxisCount: 2,
                           children: [
-                            custProfCardUser(context,"Property Images", 4.0, CupertinoIcons.photo_on_rectangle,ProjectImagesScreen()),
-                            custProfCardUser(context,"Property Documents", 4.0, CupertinoIcons.doc_append,ProjectImagesScreen()),
-                            custProfCardUser(context,"Personal Documents", 4.0,CupertinoIcons.doc_person,ProjectImagesScreen()),
-                            custProfCardUser(context,"Transaction", 4.0, CupertinoIcons.arrow_right_arrow_left,ProjectImagesScreen()),
-                            custProfCardUser(context,"Bills Documents", 4.0, CupertinoIcons.doc_text,ProjectImagesScreen()),
+                            custProfCardUser(context,"Property Images", CupertinoIcons.photo_on_rectangle,ProjectImagesScreen()),
+                            custProfCardUser(context,"Property Documents", CupertinoIcons.doc_append,ProjectImagesScreen()),
+                            custProfCardUser(context,"Personal Documents", CupertinoIcons.doc_person,PersonalDocumentScreen(currentUser?.userMobile)),
+                            custProfCardUser(context,"Transaction", CupertinoIcons.arrow_right_arrow_left,ProjectImagesScreen()),
+                            custProfCardUser(context,"Bills Documents", CupertinoIcons.doc_text,ProjectImagesScreen()),
                           ],
                         ),
                       ),

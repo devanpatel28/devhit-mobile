@@ -44,7 +44,6 @@ class _MyProjectState extends State<MyProject> {
     pStatus = widget.currentProject!.proStatus;
     p2BHK = widget.currentProject!.pro2bhk;
     p3BHK = widget.currentProject!.pro3bhk;
-    p2BHK = widget.currentProject!.pro2bhk;
     pPercent = widget.currentProject!.proPercent;
   }
   Future<void> requestPermissions() async {

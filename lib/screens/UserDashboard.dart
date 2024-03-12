@@ -207,7 +207,10 @@ class _UserDashboardState extends State<UserDashboard> {
                               ],
                             ),
                           ),
-                          Text(_getGreeting(),style: primaryStyleBold(context, pallete4, 4),)
+                          InkWell(
+                            onTap: () => setState(() {initUserData();initProjectData();}),
+                              child: Text(_getGreeting(),style: primaryStyleBold(context, pallete4, 4),)
+                          )
                         ],
                       ),
                     ),

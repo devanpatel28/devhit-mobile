@@ -37,7 +37,7 @@ class Project {
         proBrochure : json['project_brochure'],
         proStatus : json['pro_status'],
         pro2bhk : json['pro_2bhk'],
-        pro3bhk : json['pro_2bhk'],
+        pro3bhk : json['pro_3bhk'],
         proPercent : json['pro_percent']
     );
   }

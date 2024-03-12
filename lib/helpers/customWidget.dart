@@ -248,6 +248,29 @@ Widget customHeading2(context,title)
   );
 }
 
+Widget customHeading3(context,title)
+{
+  return Padding(
+    padding: const EdgeInsets.only(top: 5,bottom: 5,left: 5),
+    child: Row(
+      children: [
+        Container(
+          height: 12,
+          width: 5,
+          decoration: BoxDecoration(
+            color: pallete4,
+            borderRadius: BorderRadius.circular(2)
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: Text(title.toString().toUpperCase(),style: primaryStyleBold(context, pallete4, 3)),
+        ),
+      ],
+    ),
+  );
+}
+
 Widget contactFooter(context)
 {
   return Column(

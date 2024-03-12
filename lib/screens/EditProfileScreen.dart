@@ -52,6 +52,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               padding: const EdgeInsets.all(15.0),
               child: Column(
                 children: [
+                  customHeading3(context,"Name"),
                   Container(
                     width: double.infinity,
                     height: getHeight(context, 0.07),
@@ -73,6 +74,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                   SizedBox(height: getHeight(context, 0.02),),
+                  customHeading3(context,"Email"),
                   Container(
                     width: double.infinity,
                     height: getHeight(context, 0.07),
@@ -95,6 +97,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                   SizedBox(height: getHeight(context, 0.02),),
+                  customHeading3(context,"Mobile"),
                   Container(
                     width: double.infinity,
                     height: getHeight(context, 0.07),
@@ -117,6 +120,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                   SizedBox(height: getHeight(context, 0.02),),
+                  customHeading3(context,"Address"),
                   Container(
                     width: double.infinity,
                     height: getHeight(context, 0.22),

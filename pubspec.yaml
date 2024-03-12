@@ -70,6 +70,7 @@ dependencies:
   dio: ^5.4.1
   permission_handler: ^11.3.0
   path: ^1.8.3
+  open_filex: ^4.4.0
 
 
 dev_dependencies:

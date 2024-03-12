@@ -1,7 +1,7 @@
 import 'dart:ui';
 Color transparent = Color(0x00FFFFFF);
 Color pallete0 = Color(0xFFFDFDFD);
-Color pallete1 = Color(0xFFEAEAEA);
+Color pallete1 = Color(0xFFEEEEEE);
 Color pallete2 = Color(0xff24a695);
 Color pallete3 = Color(0xFF0077d2);
 Color pallete4 = Color(0xFF153f70);

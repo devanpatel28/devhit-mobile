@@ -211,6 +211,43 @@ Widget customHeading(context,title)
   );
 }
 
+Widget customHeading2(context,title)
+{
+  return Padding(
+    padding: const EdgeInsets.only(top: 5,bottom: 5),
+    child: Row(
+      children: [
+        Expanded(
+            child:Container(
+              height: 1,
+              width: 10,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.transparent, Colors.black26],
+                ),
+              ),
+            )
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: Text(title.toString().toUpperCase(),style: primaryStyleBold(context, pallete4, 3)),
+        ),
+        Expanded(
+            child:Container(
+              height: 1,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.black26,Colors.transparent],
+                ),
+              ),
+            )
+        ),
+      ],
+    ),
+  );
+}
+
 Widget contactFooter(context)
 {
   return Column(

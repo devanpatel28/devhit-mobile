@@ -1,6 +1,7 @@
 import 'package:devhit_mobile/controllers/UserController.dart';
 import 'package:devhit_mobile/screens/EditProfileScreen.dart';
 import 'package:devhit_mobile/screens/LoginScreen.dart';
+import 'package:devhit_mobile/screens/MyProject.dart';
 import 'package:devhit_mobile/screens/PersonalDocumentScreen.dart';
 import 'package:devhit_mobile/screens/ProjectImagesScreen.dart';
 import 'package:flutter/cupertino.dart';
@@ -212,77 +213,79 @@ class _UserDashboardState extends State<UserDashboard> {
                     ),
                   ),
                   customDivider(context, 2.0, 1.5, 1.5),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: pallete1,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    width: double.infinity,
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Container(
-                            clipBehavior: Clip.antiAlias,
-                              width: 150,
-                            height: 150,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(7),
-                            ),
-                            child: currentProject!=null?
-                            Image.network(
-                              currentProject!.proImage,
-                              fit: BoxFit.cover,
-                              loadingBuilder: (context, child, loadingProgress) {
-                                if(loadingProgress==null)
-                                  {
-                                    return child;
-                                  }
-                                return Stack(
-                                  children: [
-                                    Center(child: Text("Loading...",style: primaryStyle(context, pallete4, 3),)),
-                                    loadingBar(context, 150, 150, Colors.black12),
-                                  ],
-                                );
-                              }
-                              )
-                                :loadingBar(context, 150, 150, Colors.black12)
-                          ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 20,bottom: 10,left: 10),
-                              child:Center(
-                                child: currentProject!=null?
-                                    Text(currentProject!.proName,style: primaryStyleBold(context, pallete4, 5),textAlign: TextAlign.left)
-                                    :loadingBar(context, 0.03, 0.45,Colors.black12),
-                              )
-                            ),
-                            LinearPercentIndicator(
-                              alignment: MainAxisAlignment.center,
-                              width: getWidth(context, 0.45),
-                              lineHeight: 12.0,
-                              barRadius: Radius.circular(10),
-                              percent: currentProject!=null?currentProject!.proPercent:0,
-                              animation: true,
-                              progressColor: pallete4,
-                              backgroundColor: Colors.black12,
-                            ),
-
-                            Padding(
-                              padding: const EdgeInsets.only(top: 15,bottom: 15,left: 10),
-                              child: Center(
-                                child: currentProject!=null?
-                                Text("Status : ${currentProject?.proStatus}",style: primaryStyleBold(context, pallete4, 3.5),textAlign: TextAlign.left)
-                                    :loadingBar(context, 0.02, 0.4, Colors.black12),
+                  InkWell(onTap: () => Get.to(MyProject(currentProject),curve: Curves.ease),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: pallete1,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      width: getWidth(context, 0.95),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Container(
+                              clipBehavior: Clip.antiAlias,
+                                width: 150,
+                              height: 150,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(7),
                               ),
+                              child: currentProject!=null?
+                              Image.network(
+                                currentProject!.proImage,
+                                fit: BoxFit.cover,
+                                loadingBuilder: (context, child, loadingProgress) {
+                                  if(loadingProgress==null)
+                                    {
+                                      return child;
+                                    }
+                                  return Stack(
+                                    children: [
+                                      Center(child: Text("Loading...",style: primaryStyle(context, pallete4, 3),)),
+                                      loadingBar(context, 150, 150, Colors.black12),
+                                    ],
+                                  );
+                                }
+                                )
+                                  :loadingBar(context, 150, 150, Colors.black12)
                             ),
-                            SizedBox(height: 10),
-                          ],
-                        ),
-                      ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20,bottom: 10,left: 10),
+                                child:Center(
+                                  child: currentProject!=null?
+                                      Text(currentProject!.proName,style: primaryStyleBold(context, pallete4, 5),textAlign: TextAlign.left)
+                                      :loadingBar(context, 0.03, 0.45,Colors.black12),
+                                )
+                              ),
+                              LinearPercentIndicator(
+                                alignment: MainAxisAlignment.center,
+                                width: getWidth(context, 0.45),
+                                lineHeight: 12.0,
+                                barRadius: Radius.circular(10),
+                                percent: currentProject!=null?currentProject!.proPercent:0,
+                                animation: true,
+                                progressColor: pallete4,
+                                backgroundColor: Colors.black12,
+                              ),
+
+                              Padding(
+                                padding: const EdgeInsets.only(top: 15,bottom: 15,left: 10),
+                                child: Center(
+                                  child: currentProject!=null?
+                                  Text("Status : ${currentProject?.proStatus}",style: primaryStyleBold(context, pallete4, 3.5),textAlign: TextAlign.left)
+                                      :loadingBar(context, 0.02, 0.4, Colors.black12),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   customDivider(context, 2.0, 1.5, 1.5),

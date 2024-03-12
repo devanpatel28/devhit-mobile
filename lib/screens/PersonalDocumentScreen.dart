@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:intl/intl.dart'; // For formatting the timestamp
-import 'package:path_provider/path_provider.dart';
+import 'package:intl/intl.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../helpers/colors.dart';
 import '../helpers/size.dart';
@@ -89,7 +89,9 @@ class _PersonalDocumentScreenState extends State<PersonalDocumentScreen> {
 
     try {
       await dio.download(url, filePath);
-      Get.snackbar("Success", "File downloaded Successfully", colorText: Colors.white, backgroundColor: Colors.green);
+      Get.snackbar("Success", "File downloaded Successfully", colorText: Colors.white, backgroundColor: Colors.green,
+          onTap: (snack) => OpenFilex.open(filePath)
+      );
     } catch (e) {
       Get.snackbar("Error", "Failed to download file", colorText: Colors.white, backgroundColor: Colors.red);
     }

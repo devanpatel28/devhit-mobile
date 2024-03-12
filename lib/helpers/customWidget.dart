@@ -433,15 +433,28 @@ Widget customLoading(double size)
           height: size,
           width: size,
           decoration: BoxDecoration(
-              color: pallete0,
-              shape: BoxShape.circle
+              color: Colors.white38,
+              borderRadius: BorderRadius.circular(20)
           ),
         ),
         LoadingAnimationWidget.fourRotatingDots(
           color: pallete2,
-          size: (size/3)*1.7,
+          size: (size/3)*1.5,
         ),
       ],
     ),
+  );
+}
+
+Widget customNoData(context,String msg)
+{
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      Image.asset("assets/images/no-document.png",height: 80,opacity: const AlwaysStoppedAnimation(.8),),
+      SizedBox(height: 15,),
+      Text(msg,style: primaryStyle(context, pallete4, 4),)
+    ],
   );
 }

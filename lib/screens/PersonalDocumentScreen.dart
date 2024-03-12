@@ -10,11 +10,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../helpers/colors.dart';
 import '../helpers/size.dart';
+import 'package:path/path.dart' as path;
 import '../helpers/textStyle.dart';
 
 class PersonalDocumentScreen extends StatefulWidget {
-  final String? userMob;
-  const PersonalDocumentScreen(this.userMob, {Key? key}) : super(key: key);
+  final String? userId;
+  const PersonalDocumentScreen(this.userId, {Key? key}) : super(key: key);
 
   @override
   State<PersonalDocumentScreen> createState() => _PersonalDocumentScreenState();
@@ -23,13 +24,14 @@ class PersonalDocumentScreen extends StatefulWidget {
 class _PersonalDocumentScreenState extends State<PersonalDocumentScreen> {
   bool isLoading = false;
   double uploadProgress = 0.0;
+  bool isListEmpty = false;
 
   Future<List<Map<String, dynamic>>> listFiles() async {
     List<Map<String, dynamic>> files = [];
     final ListResult result = await FirebaseStorage.instance.ref('personal_documents').listAll();
-
+    isListEmpty=false;
     for (var item in result.items) {
-      if (item.name.startsWith(widget.userMob!)) {
+      if (item.name.startsWith(widget.userId!+"_")) {
         String downloadUrl = await item.getDownloadURL();
         files.add({
           'name': item.name,
@@ -38,6 +40,10 @@ class _PersonalDocumentScreenState extends State<PersonalDocumentScreen> {
         });
       }
     }
+    if(files.isEmpty)
+      {
+        isListEmpty=!isListEmpty;
+      }
 
     return files;
   }
@@ -48,7 +54,17 @@ class _PersonalDocumentScreenState extends State<PersonalDocumentScreen> {
       status = await Permission.storage.request();
     }
   }
-
+  Future<void> deleteFile(String fileName) async {
+    String filePath = 'personal_documents/$fileName';
+    try {
+      await FirebaseStorage.instance.ref(filePath).delete();
+      Get.snackbar("Success", "File deleted Successfully",
+          colorText: Colors.white, backgroundColor: Colors.green);
+    } catch (e) {
+      Get.snackbar("Error", "Failed to delete file",
+          colorText: Colors.white, backgroundColor: Colors.red);
+    }
+  }
   Future<void> downloadFile(String url, String fileName,String ext) async {
     await requestPermissions(); // Request permissions before downloading file
 
@@ -73,7 +89,7 @@ class _PersonalDocumentScreenState extends State<PersonalDocumentScreen> {
 
     try {
       await dio.download(url, filePath);
-      Get.snackbar("Success", "File downloaded to $filePath", colorText: Colors.white, backgroundColor: Colors.green);
+      Get.snackbar("Success", "File downloaded Successfully", colorText: Colors.white, backgroundColor: Colors.green);
     } catch (e) {
       Get.snackbar("Error", "Failed to download file", colorText: Colors.white, backgroundColor: Colors.red);
     }
@@ -85,7 +101,8 @@ class _PersonalDocumentScreenState extends State<PersonalDocumentScreen> {
     final result = await FilePicker.platform.pickFiles(type: FileType.any);
     if (result != null) {
       File file = File(result.files.single.path!);
-      String fileName = "${widget.userMob}_${DateFormat('HHmmss').format(DateTime.now())}";
+      String ext = path.extension(result.files.single.path!);
+      String fileName = "${widget.userId}_${DateFormat('HHmmss').format(DateTime.now())}$ext";
       String filePath = 'personal_documents/$fileName';
       try {
         setState(() {
@@ -116,7 +133,6 @@ class _PersonalDocumentScreenState extends State<PersonalDocumentScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,6 +146,7 @@ class _PersonalDocumentScreenState extends State<PersonalDocumentScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
+            SizedBox(height: 10,),
             Container(
               width: double.infinity,
               height: getHeight(context, 0.07),
@@ -139,9 +156,11 @@ class _PersonalDocumentScreenState extends State<PersonalDocumentScreen> {
               ),
               child: TextButton(
                   onPressed: isLoading ? null : uploadFile,
-                  child: Text(isLoading?"UPLOADING...${uploadProgress.floor()}%":"UPLOAD", style: primaryStyleBold(context, pallete1, 4),)
+                  child: Text(isLoading?"UPLOADING...${uploadProgress.floor()}%":"UPLOAD", style: primaryStyleBold(context, pallete1, 4.5),)
               ),
             ),
+            SizedBox(height: 10,),
+            customHeading(context, "Your Documents"),
             Expanded(
               child: FutureBuilder<List<Map<String, dynamic>>>(
                 future: listFiles(),
@@ -150,18 +169,86 @@ class _PersonalDocumentScreenState extends State<PersonalDocumentScreen> {
                     return customLoading(100);
                   } else if (snapshot.hasError) {
                     return Center(child: Text("Error loading files"));
-                  } else {
+                  }
+                  else {
                     final files = snapshot.data!;
-                    return ListView.builder(
+                    return isListEmpty?customNoData(context, "You Don't Have Any Document")
+                        :ListView.builder(
                       itemCount: files.length,
                       itemBuilder: (context, index) {
                         var file = files[index];
-                        return ListTile(
-                          leading: Icon(file['type'] == 'pdf' ? Icons.picture_as_pdf : Icons.image),
-                          title: Text(file['name']),
-                          trailing: IconButton(
-                            icon: Icon(Icons.download),
-                            onPressed: () => downloadFile(file['url'], file['name'],file['type']),
+                        return Card(
+                          child: Container(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ListTile(
+                                leading: Image.asset(file['type'] == 'pdf' ?"assets/images/pdf.png":"assets/images/image.png",width: 30),
+                                title: Text(file['name'],style: primaryStyle(context, pallete4, 4)),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: Image.asset(
+                                        "assets/images/download.png",
+                                        width: 30,
+                                        alignment: Alignment.center,
+                                      ),
+                                      onPressed: () => downloadFile(file['url'], file['name'], file['type']),
+                                    ),
+                                    SizedBox(width: 5),
+                                    IconButton(
+                                      icon: Image.asset(
+                                        "assets/images/delete.png",
+                                        width: 25,
+                                        alignment: Alignment.center,
+                                      ),
+                                      onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) => AlertDialog(
+                                                shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(15) ),
+                                                title: Center(
+                                                    child: Text('Delete Document',style: primaryStyleBold(context, pallete4, 5))
+                                                ),
+                                                content: Text("Are you sure want to delete this document ?",style: primaryStyle(context, pallete3, 4),textAlign: TextAlign.center),
+                                                actions: <Widget>[
+                                                  Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(right: 8.0),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          ElevatedButton(
+                                                            style: ElevatedButton.styleFrom(
+                                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                                                              backgroundColor: pallete4,
+                                                            ),
+                                                            onPressed: () {setState(() {
+                                                              deleteFile(file['name']);
+                                                              Get.back();
+                                                            });},
+                                                            child: Text('YES',style: primaryStyleBold(context, pallete0, 3.5)),
+                                                          ),
+                                                          SizedBox(width: getWidth(context, 0.05),),
+                                                          ElevatedButton(
+                                                            onPressed: () => Get.back(),
+                                                            child: Text('NO',style: primaryStyleBold(context, pallete0, 3.5)),
+                                                            style: ElevatedButton.styleFrom(
+                                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                                                              backgroundColor: pallete4,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),],
+                                              ));
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         );
                       },

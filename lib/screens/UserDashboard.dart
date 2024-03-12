@@ -299,7 +299,7 @@ class _UserDashboardState extends State<UserDashboard> {
                           children: [
                             custProfCardUser(context,"Property Images", CupertinoIcons.photo_on_rectangle,ProjectImagesScreen()),
                             custProfCardUser(context,"Property Documents", CupertinoIcons.doc_append,ProjectImagesScreen()),
-                            custProfCardUser(context,"Personal Documents", CupertinoIcons.doc_person,PersonalDocumentScreen(currentUser?.userMobile)),
+                            custProfCardUser(context,"Personal Documents", CupertinoIcons.doc_person,PersonalDocumentScreen(!currentUser.isNull?currentUser!.userId.toString():"0")),
                             custProfCardUser(context,"Transaction", CupertinoIcons.arrow_right_arrow_left,ProjectImagesScreen()),
                             custProfCardUser(context,"Bills Documents", CupertinoIcons.doc_text,ProjectImagesScreen()),
                           ],

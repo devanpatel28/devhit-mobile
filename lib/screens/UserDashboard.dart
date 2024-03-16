@@ -4,6 +4,7 @@ import 'package:devhit_mobile/screens/LoginScreen.dart';
 import 'package:devhit_mobile/screens/MyProject.dart';
 import 'package:devhit_mobile/screens/PersonalDocumentScreen.dart';
 import 'package:devhit_mobile/screens/ProjectImagesScreen.dart';
+import 'package:devhit_mobile/screens/UserTransactionScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,6 +17,7 @@ import '../helpers/size.dart';
 import '../helpers/textStyle.dart';
 import '../model/projectModel.dart';
 import '../model/userModel.dart';
+import 'PropertyDocumentsScreen.dart';
 class UserDashboard extends StatefulWidget {
   UserDashboard({super.key});
   @override
@@ -47,6 +49,10 @@ class _UserDashboardState extends State<UserDashboard> {
     // TODO: implement initState
     super.initState();
     initUserData();
+    if(currentUser.isNull)
+      {
+        initUserData();
+      }
   }
   Future<int?> getUID() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -304,9 +310,9 @@ class _UserDashboardState extends State<UserDashboard> {
                           crossAxisCount: 2,
                           children: [
                             custProfCardUser(context,"Property Images", CupertinoIcons.photo_on_rectangle,ProjectImagesScreen()),
-                            custProfCardUser(context,"Property Documents", CupertinoIcons.doc_append,ProjectImagesScreen()),
+                            custProfCardUser(context,"Property Documents", CupertinoIcons.doc_append,PropertyDocumentsScreen(!currentUser.isNull?currentUser!.userId.toString():"0")),
                             custProfCardUser(context,"Personal Documents", CupertinoIcons.doc_person,PersonalDocumentScreen(!currentUser.isNull?currentUser!.userId.toString():"0")),
-                            custProfCardUser(context,"Transaction", CupertinoIcons.arrow_right_arrow_left,ProjectImagesScreen()),
+                            custProfCardUser(context,"Transaction", CupertinoIcons.arrow_right_arrow_left,UserTransactionScreen(!currentUser.isNull?currentUser!.userId:0)),
                             custProfCardUser(context,"Bills Documents", CupertinoIcons.doc_text,ProjectImagesScreen()),
                           ],
                         ),

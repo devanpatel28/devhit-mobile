@@ -74,7 +74,7 @@ class _MyProjectState extends State<MyProject> {
 
     try {
       await dio.download(url, filePath);
-      Get.snackbar("Success", "File downloaded successfully", colorText: Colors.white, backgroundColor: Colors.green,
+      Get.snackbar("Success", "File downloaded successfully\n\n CLICK HERE TO VIEW", colorText: Colors.white, backgroundColor: Colors.green,
           onTap: (snack) => OpenFilex.open(filePath),
       );
     } catch (e) {
@@ -142,7 +142,7 @@ class _MyProjectState extends State<MyProject> {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: [
-                      customHeading2(context, "Project Name"),
+                      customHeading3(context, "Project Name"),
                       Expanded(child: Center(child: Text(" \" "+pName+" \" ",style: primaryStyleBold(context, pallete3, 4.5),)))
                     ],
                   ),
@@ -160,7 +160,7 @@ class _MyProjectState extends State<MyProject> {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: [
-                      customHeading2(context, "Project Address"),
+                      customHeading3(context, "Project Address"),
                       Expanded(child: Center(child: Text(pAddress,style: primaryStyleBold(context, pallete3, 3.5),)))
                     ],
                   ),
@@ -181,7 +181,7 @@ class _MyProjectState extends State<MyProject> {
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                          customHeading2(context, "Area"),
+                          customHeading3(context, "Area"),
                           Expanded(child: Center(child: Text(pArea.toString()+" Square Feet",style: primaryStyleBold(context, pallete3, 4),)))
                         ],
                       ),
@@ -198,7 +198,7 @@ class _MyProjectState extends State<MyProject> {
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                          customHeading2(context, "Residence"),
+                          customHeading3(context, "Residence"),
                           Expanded(child: Center(child: Text(pResident.toString()+" Flats",style: primaryStyleBold(context, pallete3, 4),)))
                         ],
                       ),
@@ -221,7 +221,7 @@ class _MyProjectState extends State<MyProject> {
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                          customHeading2(context, "2 BHK"),
+                          customHeading3(context, "2 BHK"),
                           Expanded(child: Center(child: Text(p2BHK.toString()+" Flats",style: primaryStyleBold(context, pallete3, 4),)))
                         ],
                       ),
@@ -238,7 +238,7 @@ class _MyProjectState extends State<MyProject> {
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                          customHeading2(context, "3 BHK"),
+                          customHeading3(context, "3 BHK"),
                           Expanded(child: Center(child: Text(p3BHK.toString()+" Flats",style: primaryStyleBold(context, pallete3, 4),)))
                         ],
                       ),

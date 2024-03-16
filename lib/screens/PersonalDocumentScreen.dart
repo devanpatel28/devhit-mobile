@@ -31,10 +31,11 @@ class _PersonalDocumentScreenState extends State<PersonalDocumentScreen> {
     final ListResult result = await FirebaseStorage.instance.ref('personal_documents').listAll();
     isListEmpty=false;
     for (var item in result.items) {
+      final filenameWithoutPrefix = item.name.substring(widget.userId!.length + 1);
       if (item.name.startsWith(widget.userId!+"_")) {
         String downloadUrl = await item.getDownloadURL();
         files.add({
-          'name': item.name,
+          'name': filenameWithoutPrefix,
           'url': downloadUrl,
           'type': item.name.endsWith('.pdf') ? 'pdf' : 'image',
         });

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "353396836861",
+    "project_id": "devhit-files",
+    "storage_bucket": "devhit-files.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:353396836861:android:8a0d08f0a00e1767d5b194",
+        "android_client_info": {
+          "package_name": "com.devhitdevelopers.devhit_developers"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAYr46BE9Vm3gemIGcRWNNofaYcFDp-PA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:353396836861:android:55e9e7e01f01eebbd5b194",
+        "android_client_info": {
+          "package_name": "com.example.devhit_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAYr46BE9Vm3gemIGcRWNNofaYcFDp-PA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

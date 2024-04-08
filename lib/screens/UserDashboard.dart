@@ -1,4 +1,6 @@
 import 'package:devhit_mobile/controllers/UserController.dart';
+import 'package:devhit_mobile/screens/AddProject.dart';
+import 'package:devhit_mobile/screens/ChatScreen.dart';
 import 'package:devhit_mobile/screens/EditProfileScreen.dart';
 import 'package:devhit_mobile/screens/LoginScreen.dart';
 import 'package:devhit_mobile/screens/MyProject.dart';
@@ -309,11 +311,12 @@ class _UserDashboardState extends State<UserDashboard> {
                           scrollDirection: Axis.vertical,
                           crossAxisCount: 2,
                           children: [
-                            custProfCardUser(context,"Property Images", CupertinoIcons.photo_on_rectangle,ProjectImagesScreen()),
+                            custProfCardUser(context,"Property Images", CupertinoIcons.photo_on_rectangle,ProjectImagesScreen(currentProject)),
                             custProfCardUser(context,"Property Documents", CupertinoIcons.doc_append,PropertyDocumentsScreen(!currentUser.isNull?currentUser!.userId.toString():"0")),
                             custProfCardUser(context,"Personal Documents", CupertinoIcons.doc_person,PersonalDocumentScreen(!currentUser.isNull?currentUser!.userId.toString():"0")),
                             custProfCardUser(context,"Transaction", CupertinoIcons.arrow_right_arrow_left,UserTransactionScreen(!currentUser.isNull?currentUser!.userId:0)),
-                            custProfCardUser(context,"Bills Documents", CupertinoIcons.doc_text,ProjectImagesScreen()),
+                            custProfCardUser(context,"Messages", CupertinoIcons.chat_bubble_2,ChatScreen(currentProject))
+
                           ],
                         ),
                       ),
@@ -326,7 +329,7 @@ class _UserDashboardState extends State<UserDashboard> {
             ],
           ),
         ),
-      ),
+      )
     );
   }
 }

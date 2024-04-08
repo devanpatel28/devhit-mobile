@@ -30,6 +30,29 @@ class UserController extends GetxController {
     }
   }
 
+  Future<User?> fetchusermob(String mob) async {
+    try {
+      final response = await http.post(
+          Uri.parse(userbymobAPI),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            "user_mobile": mob,
+          })
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print("data obtained");
+        return User.fromJson(responseData[0]);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
   Future<bool> updateuser(int uid,String uName,String uEmail,String uMobile,String uAddress) async {
     try {
       final response = await http.post(
@@ -41,6 +64,28 @@ class UserController extends GetxController {
             "user_email":uEmail,
             "user_mobile":uMobile,
             "user_address":uAddress
+          })
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+        print("data Updated");
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return false;
+    }
+  }
+  Future<bool> updateuserpass(int uid,String pass) async {
+    try {
+      final response = await http.post(
+          Uri.parse(updateUserPassAPI),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            "user_id":uid,
+            "user_password":pass
           })
       );
 

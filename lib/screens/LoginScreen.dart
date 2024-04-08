@@ -1,5 +1,6 @@
 import 'package:devhit_mobile/API/APIs.dart';
 import 'package:devhit_mobile/controllers/LoginController.dart';
+import 'package:devhit_mobile/helpers/textStyle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../helpers/colors.dart';
 import '../helpers/customWidget.dart';
 import '../helpers/size.dart';
+import 'ForgotPass.dart';
 import 'UserDashboard.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -46,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontSize: getSize(context, 9)
                         )
                     ),
-                    SizedBox(height: getHeight(context, 0.0001),),
+                    SizedBox(height: getHeight(context, 0.05),),
                     Container(
                       width: getWidth(context, 0.8),
                       height: getHeight(context, 0.07),
@@ -68,6 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         cursorColor: pallete4,
                       ),
                     ),
+                    SizedBox(height: 10,),
                     Container(
                       width: getWidth(context, 0.8),
                       height: getHeight(context, 0.07),
@@ -102,6 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         cursorColor: pallete4,
                       ),
                     ),
+                    SizedBox(height: 20,),
                     Container(
                       width: getWidth(context, 0.8),
                       height: getHeight(context, 0.06),
@@ -127,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         child: Text("LOGIN",
                             style: TextStyle(
-                                color: pallete1,
+                                color: pallete0,
                                 fontSize: getSize(context, 5),
                                 fontFamily: "MainReg")),
                         style: ElevatedButton.styleFrom(
@@ -137,7 +141,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: getHeight(context, 0.005),),
+                    customHeading(context, "OR"),
+                    TextButton(onPressed: (){
+                      Get.to(ForgotPassScreen(),curve: Curves.ease,duration: Duration(seconds: 1));
+                    }, child: Text("Forgot Password ?",style: primaryStyle(context, pallete4, 4),)),
                   ],
                 ),
               ),

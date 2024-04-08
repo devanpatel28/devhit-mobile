@@ -56,7 +56,7 @@ class _PersonalDocumentScreenState extends State<PersonalDocumentScreen> {
     }
   }
   Future<void> deleteFile(String fileName) async {
-    String filePath = 'personal_documents/$fileName';
+    String filePath = 'personal_documents/${widget.userId!}_$fileName';
     try {
       await FirebaseStorage.instance.ref(filePath).delete();
       Get.snackbar("Success", "File deleted Successfully",

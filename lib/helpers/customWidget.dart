@@ -114,7 +114,7 @@ Widget custProfCardUser(context,String str,IconData ico,PageAddress){
           width: getWidth(context, 0.35),
           decoration: BoxDecoration(
               color: pallete1,
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(10),
 
           ),
           child: Icon(ico, size: getSize(context, 13),color: pallete4,),
@@ -508,13 +508,15 @@ Widget customLoading(double size)
 
 Widget customNoData(context,String msg)
 {
-  return Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      Image.asset("assets/images/no-document.png",height: 80,opacity: const AlwaysStoppedAnimation(.8),),
-      SizedBox(height: 15,),
-      Text(msg,style: primaryStyle(context, pallete4, 4),)
-    ],
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Image.asset("assets/images/no-document.png",height: 80,opacity: const AlwaysStoppedAnimation(.8),),
+        SizedBox(height: 15,),
+        Text(msg,style: primaryStyle(context, pallete4, 4),)
+      ],
+    ),
   );
 }

@@ -15,7 +15,7 @@ class UserTransController extends GetxController {
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           "user_id": uid,
-        }),
+        })
       );
 
       if (response.statusCode == 200) {

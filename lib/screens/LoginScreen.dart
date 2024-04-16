@@ -9,6 +9,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../helpers/colors.dart';
 import '../helpers/customWidget.dart';
 import '../helpers/size.dart';
+import 'AdminDashboard.dart';
 import 'ForgotPass.dart';
 import 'UserDashboard.dart';
 
@@ -118,12 +119,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             {
                               Get.offAll(UserDashboard(),curve: Curves.ease,duration: Duration(seconds: 1));
                             }
+                          else if(await loginControl.loginAdmin(mob.text,pass.text))
+                          {
+                            Get.offAll(AdminDashboard(),curve: Curves.ease,duration: Duration(seconds: 1));
+                          }
                           else
                             {
-                              Get.snackbar("Login Failed","Email or Password is invalid",
-                                backgroundColor: Colors.red,
-                                colorText: pallete0,
-                              );
+                                Get.snackbar("Login Failed","Email or Password is invalid",
+                                  backgroundColor: Colors.red,
+                                  colorText: pallete0,
+                                );
                             }
                           setState(() {
                             isLoading = false;

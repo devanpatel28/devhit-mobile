@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:devhit_mobile/model/adminModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -98,6 +99,31 @@ class UserController extends GetxController {
     } catch (e) {
       print('Error: $e');
       return false;
+    }
+  }
+
+
+
+  Future<Admin?> fetchadmin(int uid) async {
+    try {
+      final response = await http.post(
+          Uri.parse(adminbyidAPI),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            "admin_id": uid,
+          })
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print("data obtained");
+        return Admin.fromJson(responseData[0]);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
     }
   }
 }

@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:devhit_mobile/screens/AdminDashboard.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:hovering/hovering.dart';
@@ -7,10 +9,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../controllers/ProjectController.dart';
 import '../helpers/colors.dart';
 import '../helpers/customWidget.dart';
 import '../helpers/size.dart';
 import '../helpers/textStyle.dart';
+import 'UserDashboard.dart';
 class AddProject extends StatefulWidget {
   const AddProject({super.key});
 
@@ -19,234 +23,351 @@ class AddProject extends StatefulWidget {
 }
 
 class _AddProjectState extends State<AddProject> {
-  List<String> selectedImages = [];
-  File? _pickedImage;
-  File? _pickedFile;
-  Uint8List webImage = Uint8List(8);
-  Uint8List? _pdfBytes;
-  String? _pdfFileName;
-  Future<void> pickImages() async {
-    final ImagePicker _picker = ImagePicker();
-    XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      var selected = File(image.path);
-      var f = await image.readAsBytes();
-      setState(() {
-        webImage = f;
-        _pickedImage = File('a');
-      });
-    }
-    else {
-      print("No image");
-    }
-  }
+  late TextEditingController pName = TextEditingController();
+  late TextEditingController pAddress = TextEditingController();
+  late TextEditingController pArea = TextEditingController();
+  late TextEditingController pResident = TextEditingController();
+  late TextEditingController p2bhk = TextEditingController();
+  late TextEditingController p3bhk = TextEditingController();
 
-  Future<void> _pickPdf() async {
+
+  String? selectedImageFileName;
+  File? selectedImageFile;
+  File? selectedPdfFile;
+  String? selectedPdfFileName;
+  String? downloadPDFURL;
+  String? downloadIMGURL;
+  bool isLoading = false;
+  ProjectController projectControl = Get.put(ProjectController());
+
+  Future<void> _selectPDF() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],
     );
 
-    if (result != null && result.files.isNotEmpty) {
+    if (result != null) {
       setState(() {
-        _pdfBytes = result.files.first.bytes;
-        _pdfFileName = result.files.first.name;
+        selectedPdfFileName = result.files.single.name;
+        selectedPdfFile = File(result.files.single.path!); // Get the file name
       });
     }
+  }
+  Future<void> _selectImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        selectedImageFile = File(pickedFile.path);
+        selectedImageFileName = pickedFile.path.split('/').last; // Get file name
+      });
+    }
+  }
+  Future<void> _uploadDetails()async {
+    await projectControl.addProject(pName.text, pAddress.text, int.parse(pArea.text), int.parse(pResident.text), int.parse(p2bhk.text), int.parse(p3bhk.text), downloadPDFURL!, downloadIMGURL!);
+  }
+
+  Future<void> _uploadFiles() async {
+    setState(() {
+      isLoading = true;
+    });
+    if (selectedPdfFile != null) {
+      TaskSnapshot pdfTask = await FirebaseStorage.instance
+          .ref('project_pdf/${pName.text}.pdf')
+          .putFile(selectedPdfFile!);
+
+      // Get download URL of the uploaded PDF file
+      downloadPDFURL = await pdfTask.ref.getDownloadURL();
+
+      print("PDF UPLOAD SUCCESS");
+    }
+
+    if (selectedImageFile != null) {
+      // Upload image file to Firebase Storage
+      TaskSnapshot imgTask = await FirebaseStorage.instance
+          .ref('project_images/${pName.text}/${pName.text}_1.png')
+          .putFile(selectedImageFile!);
+
+      // Get download URL of the uploaded image file
+      downloadIMGURL = await imgTask.ref.getDownloadURL();
+
+      print("IMAGE UPLOAD SUCCESS");
+    }
+    await _uploadDetails();
+
+    setState(() {
+      isLoading = false;
+    });
+    // Display success message
+    Get.snackbar("Success", "New Project Added Successfully",
+        backgroundColor: Colors.green, colorText: Colors.white);
+    Get.offAll(AdminDashboard(), curve: Curves.ease);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: pallete1,
-      body: Padding(
-        padding: EdgeInsets.all(40),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Add New Project",style: TextStyle(color: orangeColor1,fontSize: 25,fontFamily: "MainReg",fontWeight: FontWeight.bold)),
-              SizedBox(height: 10),
-              Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(color: orangeColor3,borderRadius: BorderRadius.circular(10)),
-                      child: TextField(
-                        decoration: InputDecoration(
+      appBar: AppBar(
+        backgroundColor: pallete4,
+        iconTheme: IconThemeData(color: pallete1),
+        centerTitle: true,
+        title: Text("Add Project",style: primaryStyleBold(context, pallete1, 5),),
+      ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                children: [
+                  customHeading3(context,"Project Name"),
+                  Container(
+                    width: double.infinity,
+                    height: getHeight(context, 0.07),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(color: pallete4)
+                    ),
+                    child: TextField(
+                      controller: pName,
+                      enabled: isLoading?false:true,
+                      style: TextStyle(
+                          fontSize: getSize(context, 4.5),fontFamily: "MainReg"),
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 15),
                           hintText: "Project Name",
-                          contentPadding: EdgeInsets.only(left: 10),
-                          border: InputBorder.none,
-                        ),
-                        style: TextStyle(fontFamily: 'MainReg',fontSize: 20,color: orangeColor1),
-                        cursorColor: orangeColor2,
+                          border: InputBorder.none
                       ),
+                      cursorColor: pallete4,
                     ),
-                    SizedBox(height: 15),
-                    Container(
-                      decoration: BoxDecoration(color: orangeColor3,borderRadius: BorderRadius.circular(10)),
-                      child: TextField(
-                        minLines: 4,
-                        maxLines: 10,
-                        decoration: InputDecoration(
-                          hintText: "Address",
-                          contentPadding: EdgeInsets.only(left: 10,top: 10),
-                          border: InputBorder.none,
-                        ),
-                        style: TextStyle(fontFamily: 'MainReg',fontSize: 20,color: orangeColor1),
-                        cursorColor: orangeColor2,
+                  ),
+                  SizedBox(height: getHeight(context, 0.02),),
+
+                  customHeading3(context,"Project Address"),
+                  Container(
+                    width: double.infinity,
+                    height: getHeight(context, 0.22),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(color: pallete4)
+                    ),
+                    padding: EdgeInsets.only(top: 10),
+                    child: TextField(
+                      controller: pAddress,
+                      enabled: isLoading?false:true,
+                      maxLines: 6,
+                      style: TextStyle(
+                          fontSize: getSize(context, 4.5),fontFamily: "MainReg"),
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                          hintText: "Project Address",
+                          border: InputBorder.none
                       ),
+                      cursorColor: pallete4,
                     ),
-                    SizedBox(height: 15),
-                    Container(
-                      decoration: BoxDecoration(color: orangeColor3,borderRadius: BorderRadius.circular(10)),
-                      child: TextField(
-                        minLines: 3,
-                        maxLines: 10,
-                        decoration: InputDecoration(
-                          hintText: "Details",
-                          contentPadding: EdgeInsets.only(left: 10,top: 10),
-                          border: InputBorder.none,
-                        ),
-                        style: TextStyle(fontFamily: 'MainReg',fontSize: 20,color: orangeColor1),
-                        cursorColor: orangeColor2,
+                  ),
+                  SizedBox(height: getHeight(context, 0.02),),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          customHeading3(context,"Project Area"),
+                          Container(
+                            width: getWidth(context, 0.45),
+                            height: getHeight(context, 0.07),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(color: pallete4)
+                            ),
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              controller: pArea,
+                              enabled: isLoading?false:true,
+                              style: TextStyle(
+                                  fontSize: getSize(context, 4.5),fontFamily: "MainReg"),
+                              decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                                  hintText: "Project Area",
+                                  border: InputBorder.none
+                              ),
+                              cursorColor: pallete4,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    SizedBox(height: 15),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: 500,
-                          decoration: BoxDecoration(color: orangeColor3,borderRadius: BorderRadius.circular(10)),
-                          child: TextField(
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              hintText: "Total Area (Sq.Ft.)",
-                              contentPadding: EdgeInsets.only(left: 10),
-                              border: InputBorder.none,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          customHeading3(context,"No. Residence"),
+                          Container(
+                            width: getWidth(context, 0.45),
+                            height: getHeight(context, 0.07),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(color: pallete4)
                             ),
-                            style: TextStyle(fontFamily: 'MainReg',fontSize: 20,color: orangeColor1),
-                            cursorColor: orangeColor2,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Container(
-                          width: 500,
-                          decoration: BoxDecoration(color: orangeColor3,borderRadius: BorderRadius.circular(10)),
-                          child: TextField(
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              hintText: "Total Flats",
-                              contentPadding: EdgeInsets.only(left: 10),
-                              border: InputBorder.none,
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              controller: pResident,
+                              enabled: isLoading?false:true,
+                              style: TextStyle(
+                                  fontSize: getSize(context, 4.5),fontFamily: "MainReg"),
+                              decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                                  hintText: "No. Residence",
+                                  border: InputBorder.none
+                              ),
+                              cursorColor: pallete4,
                             ),
-                            style: TextStyle(fontFamily: 'MainReg',fontSize: 20,color: orangeColor1),
-                            cursorColor: orangeColor2,
                           ),
-                        ),
-                        SizedBox(height: 10),
-                        Container(
-                          width: 500,
-                          decoration: BoxDecoration(color: orangeColor3,borderRadius: BorderRadius.circular(10)),
-                          child: TextField(
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              hintText: "2 BHK",
-                              contentPadding: EdgeInsets.only(left: 10),
-                              border: InputBorder.none,
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: getHeight(context, 0.02),),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          customHeading3(context,"2 BHK"),
+                          Container(
+                            width: getWidth(context, 0.45),
+                            height: getHeight(context, 0.07),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(color: pallete4)
                             ),
-                            style: TextStyle(fontFamily: 'MainReg',fontSize: 20,color: orangeColor1),
-                            cursorColor: orangeColor2,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Container(
-                          width: 500,
-                          decoration: BoxDecoration(color: orangeColor3,borderRadius: BorderRadius.circular(10)),
-                          child: TextField(
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              hintText: "3 BHK",
-                              contentPadding: EdgeInsets.only(left: 10),
-                              border: InputBorder.none,
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              controller: p2bhk,
+                              enabled: isLoading?false:true,
+                              style: TextStyle(
+                                  fontSize: getSize(context, 4.5),fontFamily: "MainReg"),
+                              decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                                  hintText: "2 BHK",
+                                  border: InputBorder.none
+                              ),
+                              cursorColor: pallete4,
                             ),
-                            style: TextStyle(fontFamily: 'MainReg',fontSize: 20,color: orangeColor1),
-                            cursorColor: orangeColor2,
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          customHeading3(context,"3 BHK"),
+                          Container(
+                            width: getWidth(context, 0.45),
+                            height: getHeight(context, 0.07),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(color: pallete4)
+                            ),
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              controller: p3bhk,
+                              enabled: isLoading?false:true,
+                              style: TextStyle(
+                                  fontSize: getSize(context, 4.5),fontFamily: "MainReg"),
+                              decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                                  hintText: "3 BHK",
+                                  border: InputBorder.none
+                              ),
+                              cursorColor: pallete4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: getHeight(context, 0.02),),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: _selectPDF, // Call function to select PDF
+                        child: Container(
+                          width: getWidth(context, 0.45),
+                          height: getWidth(context, 0.45),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: pallete4),
+                            borderRadius: BorderRadius.circular(5),
+                            color: pallete1,
+                          ),
+                          child: Center(
+                            child: selectedPdfFileName != null
+                                ? Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Image.asset("assets/images/pdf.png",width: 50),
+                                    Text(selectedPdfFileName!, style: primaryStyleBold(context, pallete4, 3.5),),
+                                  ],
+                                )
+                                : Text(
+                              "UPLOAD BROCHURE",
+                              style: primaryStyleBold(context, pallete4, 3.5),
+                            ),
                           ),
                         ),
-                      ],
-                    ),
-                    SizedBox(height: 15),
-                    Row(
-                      children: [
-                        InkWell(
-                          onTap: () => pickImages(),
-                          child: HoverAnimatedContainer(
-                            height: 150,
-                            width: 150,
-                            curve: Easing.standard,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: orangeColor3,),
-                            hoverDecoration: BoxDecoration(borderRadius: BorderRadius.circular(15),border: Border.all(color: orangeColor2,width: 2),color: orangeColor3,),
-                            child: _pickedImage==null
-                                ?Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.upload,color: orangeColor2,size: 50,),
-                                Text("Upload Image",style: primaryStyleBold(context, orangeColor2, 2.5),)],)
-                                :Container(clipBehavior: Clip.hardEdge, decoration: BoxDecoration(border: Border.all(color: Colors.green,width: 5),borderRadius: BorderRadius.circular(15)),child: Image.memory(webImage,fit: BoxFit.fill)),
+                      ),
+                      InkWell(
+                        onTap: _selectImage,
+                        child: Container(
+                          width: getWidth(context, 0.45),
+                          height: getWidth(context, 0.45),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: pallete4),
+                            borderRadius: BorderRadius.circular(5),
+                            color: pallete1,
                           ),
-                        ),
-                        SizedBox(width: 20),
-                        InkWell(
-                          onTap: () => _pickPdf(),
-                          child: HoverAnimatedContainer(
-                              height: 150,
-                              width: 150,
-                              curve: Easing.standard,
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: orangeColor3,),
-                              hoverDecoration: BoxDecoration(borderRadius: BorderRadius.circular(15),border: Border.all(color: orangeColor2,width: 2),color: orangeColor3,),
-                              child: _pdfBytes==null
-                                  ?Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.upload_file  ,color: orangeColor2,size: 50,),
-                                  Text("Upload PDF",style: primaryStyleBold(context, orangeColor2, 2.5),)],)
-                                  : Container(
-                                decoration: BoxDecoration(border: Border.all(color: Colors.green,width: 5),borderRadius: BorderRadius.circular(15)),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center, children: [
-                                  Icon(Icons.file_present_rounded  ,color: orangeColor2,size: 70,),
-                                  Text(_pdfFileName.toString(),textAlign: TextAlign.center,style: TextStyle(color: orangeColor2,fontWeight: FontWeight.bold),)],),
-                              )
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: (){
-                        Get.snackbar("Project","New Project Added !",
-                          backgroundColor: orangeColor1,
-                          colorText: Colors.white,
-                          maxWidth: getWidth(context, 0.8),
-                        );
-                      },
-                      child: Text("Submit",style: primaryStyle(context,Colors.white,5 )),
-                      style: ElevatedButton.styleFrom(
-                          fixedSize: Size(300, 50),
-                          backgroundColor: orangeColor1,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),
+                          child: selectedImageFile != null
+                              ? ClipRRect(
+                            borderRadius: BorderRadius.circular(5),
+                            child: Image.file(
+                              selectedImageFile!,
+                              fit: BoxFit.cover,
+                            ),
                           )
+                              : Center(
+                            child: Text(
+                              selectedImageFileName != null
+                                  ? selectedImageFileName!
+                                  : "UPLOAD IMAGE",
+                              style: primaryStyleBold(context, pallete4, 3.5),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+
+                  SizedBox(height: getHeight(context, 0.02),),
+
+                  Container(
+                      width: double.infinity,
+                      height: getHeight(context, 0.07),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: pallete4
+                      ),
+                      child: TextButton(
+                          onPressed: () => _uploadFiles(),
+                          child: Text("ADD PROJECT",style: primaryStyleBold(context, pallete1, 4),))
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

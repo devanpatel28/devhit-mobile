@@ -10,3 +10,6 @@ Color orangeColor2 = Color(0xFF463731);
 Color orangeColor3 = Color(0xFFffb77a);
 Color orangeColor4 = Color(0xFFffb77a);
 Color cardColor = Color(0xFFE7E7E7);
+
+Color cardColor2 = Color(0xFFFF3131);
+

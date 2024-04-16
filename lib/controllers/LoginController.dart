@@ -38,4 +38,36 @@ class LoginController extends GetxController {
       return false;
     }
   }
+  Future<bool> loginAdmin(String mobile, String password) async {
+    try {
+      print("MOBILE = "+mobile);
+      print("PASS = "+password);
+      // Make the API call
+      print("API = "+validateAdminAPI);
+      final response = await http.post(
+          Uri.parse(validateAdminAPI),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            "admin_mob": mobile,
+            "admin_pass": password
+          })
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        int userId = responseData[0]['admin_id'];
+        await prefs.setInt('adminId', userId);
+
+        print(userId);
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return false;
+    }
+  }
 }

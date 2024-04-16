@@ -26,7 +26,7 @@ class _MyAppState extends State<MyApp> {
   Future<int> getInitialScreen() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     // Use ?? 0 to handle the case when prefs.getInt returns null
-    return prefs.getInt('userId') ?? 0;
+    return prefs.getInt('adminId')==0? prefs.getInt('adminId') ?? 0: prefs.getInt('userId') ??0;
   }
 
   @override

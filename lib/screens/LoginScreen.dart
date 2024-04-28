@@ -117,6 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           });
                           if(await loginControl.login(mob.text,pass.text))
                             {
+
                               Get.offAll(UserDashboard(),curve: Curves.ease,duration: Duration(seconds: 1));
                             }
                           else if(await loginControl.loginAdmin(mob.text,pass.text))

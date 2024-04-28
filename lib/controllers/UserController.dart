@@ -54,6 +54,50 @@ class UserController extends GetxController {
     }
   }
 
+  Future<bool> checkusermob(String mob) async {
+    try {
+      final response = await http.post(
+          Uri.parse(userbymobAPI),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            "user_mobile": mob,
+          })
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return false;
+    }
+  }
+
+  List<User> users =[];
+  Future<List<User>?> fetchAllusers() async {
+    try {
+      final response = await http.post(
+          Uri.parse(Allusers),
+          headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> responseData = json.decode(response.body);
+        print("data obtained");
+        users = responseData.map((item) => User.fromJson(item)).toList();
+        // print(users);
+        return users;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
   Future<bool> updateuser(int uid,String uName,String uEmail,String uMobile,String uAddress) async {
     try {
       final response = await http.post(
@@ -102,6 +146,30 @@ class UserController extends GetxController {
     }
   }
 
+  Future<bool> addUser(String uName,String uEmail,String uMobile,String uPass,int pro_id) async {
+    try {
+      final response = await http.post(
+          Uri.parse(addUserAPI),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            "user_name":uName,
+            "user_email":uEmail,
+            "user_mobile":uMobile,
+            "user_password":uPass,
+            "pro_id":pro_id
+          })
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return false;
+    }
+  }
 
 
   Future<Admin?> fetchadmin(int uid) async {

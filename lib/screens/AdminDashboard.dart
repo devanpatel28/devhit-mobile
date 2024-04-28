@@ -7,6 +7,8 @@ import 'package:devhit_mobile/screens/LoginScreen.dart';
 import 'package:devhit_mobile/screens/MyProject.dart';
 import 'package:devhit_mobile/screens/PersonalDocumentScreen.dart';
 import 'package:devhit_mobile/screens/ProjectImagesScreen.dart';
+import 'package:devhit_mobile/screens/ProjectList.dart';
+import 'package:devhit_mobile/screens/UserList.dart';
 import 'package:devhit_mobile/screens/UserTransactionScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,7 @@ import '../helpers/size.dart';
 import '../helpers/textStyle.dart';
 import '../model/projectModel.dart';
 import '../model/userModel.dart';
+import 'AdminChatScreen.dart';
 import 'PropertyDocumentsScreen.dart';
 class AdminDashboard extends StatefulWidget {
   AdminDashboard({super.key});
@@ -219,8 +222,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           scrollDirection: Axis.vertical,
                           crossAxisCount: 2,
                           children: [
-                            custProfCardUser(context,"Projects", CupertinoIcons.building_2_fill,AddProject()),
-                            custProfCardUser(context,"Messages", CupertinoIcons.chat_bubble_2,ChatScreen(currentProject))
+                            custProfCardUser(context,"Projects", CupertinoIcons.building_2_fill,ProjectList()),
+                            custProfCardUser(context,"Users", CupertinoIcons.person_2_alt,UserList()),
+                            custProfCardUser(context,"Messages", CupertinoIcons.chat_bubble_2,AdminChatScreen())
                           ],
                         ),
                       ),

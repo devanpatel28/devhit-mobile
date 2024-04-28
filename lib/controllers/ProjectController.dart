@@ -29,6 +29,7 @@ class ProjectController extends GetxController {
       return null;
     }
   }
+
   Future<bool> addProject(
       String pName,
       String pAddress,
@@ -66,4 +67,32 @@ class ProjectController extends GetxController {
       return false;
     }
   }
+
+  List<Project> projects = []; // Store fetched transactions
+
+  Future<List<Project>?> fetchAllProjects() async {
+    try {
+      final response = await http.post(
+        Uri.parse(getAllProjects),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> responseData = json.decode(response.body); // Parse as List<dynamic>
+        print("$responseData Transaction data obtained");
+        projects = responseData.map((item) => Project.fromJson(item)).toList(); // Map to UserTransaction objects
+        return projects;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
+
+
+
 }
+

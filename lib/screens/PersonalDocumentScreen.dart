@@ -1,7 +1,9 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:devhit_mobile/helpers/customWidget.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -50,6 +52,7 @@ class _PersonalDocumentScreenState extends State<PersonalDocumentScreen> {
   }
 
   Future<void> requestPermissions() async {
+    log("FROM METHOD REQ PERMISSION");
     var status = await Permission.storage.status;
     if (!status.isGranted) {
       status = await Permission.storage.request();
@@ -90,14 +93,85 @@ class _PersonalDocumentScreenState extends State<PersonalDocumentScreen> {
 
     try {
       await dio.download(url, filePath);
-      Get.snackbar("Success", "File downloaded Successfully", colorText: Colors.white, backgroundColor: Colors.green,
-          onTap: (snack) => OpenFilex.open(filePath)
-      );
+      if (await _checkNotificationPermission()) {
+        log("FROM IF REQ PERMISSION");
+
+        showNotification(filePath);
+      }
+      // Get.snackbar("Success", "File downloaded Successfully", colorText: Colors.white, backgroundColor: Colors.green,
+      //     onTap: (snack) => OpenFilex.open(filePath)
+      // );
     } catch (e) {
       Get.snackbar("Error", "Failed to download file", colorText: Colors.white, backgroundColor: Colors.red);
     }
   }
 
+  Future<bool> _checkNotificationPermission() async {
+    final status = await Permission.notification.status;
+    if (status.isDenied || status.isPermanentlyDenied) {
+      // Request permission
+      final result = await Permission.notification.request();
+      return result.isGranted;
+    }
+    return status.isGranted;
+  }
+  Future<void> showNotification(String filePath) async {
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+    const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    final InitializationSettings initializationSettings =
+    InitializationSettings(android: initializationSettingsAndroid);
+
+    try {
+      await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+      print("Notification initialized successfully");
+    } catch (e) {
+      print("Failed to initialize notifications: $e");
+      return;
+    }
+
+    print("Showing notification");
+
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(
+      'your_channel_id', // Replace with your channel ID
+      'Your Channel Name',
+      'Your Channel Description',
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'ticker',
+    );
+
+    const NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    try {
+      await flutterLocalNotificationsPlugin.show(
+        0,
+        'Download Complete',
+        'Tap to open file',
+        platformChannelSpecifics,
+        payload: filePath,
+      );
+      print("Notification shown successfully");
+    } catch (e) {
+      print("Failed to show notification: $e");
+    }
+
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onSelectNotification: (String? payload) async {
+        // Check if the payload is not null and corresponds to a file path
+        if (payload != null && await File(payload).exists()) {
+          // Open the file when notification is tapped
+          OpenFilex.open(filePath);
+        }
+      },
+    );
+
+  }
 
 
   Future<void> uploadFile() async {
@@ -135,6 +209,9 @@ class _PersonalDocumentScreenState extends State<PersonalDocumentScreen> {
       }
     }
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {

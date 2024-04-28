@@ -1,6 +1,4 @@
-
 import 'dart:io';
-
 import 'package:devhit_mobile/helpers/customWidget.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,7 +27,7 @@ class _ProjectImagesScreenState extends State<ProjectImagesScreen> {
   late String pName;
   late List<String> imageUrls = [];
   late List<DateTime> modifiedDates = [];
-
+  bool isLoading= false;
   @override
   void initState() {
     super.initState();
@@ -38,6 +36,7 @@ class _ProjectImagesScreenState extends State<ProjectImagesScreen> {
   }
 
   void fetchImages() async {
+    setState(() {isLoading=true;});
     var folderRef = FirebaseStorage.instance.ref().child('project_images/$pName');
     var items = await folderRef.listAll();
     await Future.forEach(items.items, (Reference ref) async {
@@ -48,6 +47,7 @@ class _ProjectImagesScreenState extends State<ProjectImagesScreen> {
         modifiedDates.add(metadata.updated ?? DateTime.now());
       });
     });
+    setState(() {isLoading=false;});
   }
 
   @override
@@ -59,7 +59,9 @@ class _ProjectImagesScreenState extends State<ProjectImagesScreen> {
         centerTitle: true,
         title: Text("Project Images",style: primaryStyleBold(context, pallete1, 5),),
       ),
-      body: Padding(
+      body: isLoading
+          ? customLoading(100)
+          : Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView.builder(
           itemCount: imageUrls.length,

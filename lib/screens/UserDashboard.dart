@@ -63,6 +63,7 @@ class _UserDashboardState extends State<UserDashboard> {
 
   Future<void> initUserData() async {
     final int? userId = await getUID();
+    print("FROM USER DASH BOARD : $userId");
     if (userId != null) {
       final User? user = await userControl.fetchuser(userId);
       if (user != null) {

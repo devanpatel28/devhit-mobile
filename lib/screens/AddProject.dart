@@ -116,6 +116,8 @@ class _AddProjectState extends State<AddProject> {
       ),
       body: Stack(
         children: [
+          isLoading?
+            customLoading(120):
           SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(15.0),
@@ -367,6 +369,7 @@ class _AddProjectState extends State<AddProject> {
               ),
             ),
           ),
+
         ],
       ),
     );

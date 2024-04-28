@@ -57,10 +57,10 @@ class LoginController extends GetxController {
         final responseData = json.decode(response.body);
         final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-        int userId = responseData[0]['admin_id'];
-        await prefs.setInt('adminId', userId);
+        int adminID = responseData[0]['admin_id'];
+        await prefs.setInt('adminId', adminID);
 
-        print(userId);
+        print(adminID);
         return true;
       } else {
         return false;

@@ -70,8 +70,8 @@ class _ForgotPassScreenState extends State<ForgotPassScreen> {
     } catch (error) {
       print('Error sending email: $error');
     }
-
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
